@@ -1,0 +1,43 @@
+# coding: utf-8
+
+import FreeCAD
+import FreeCADGui
+import Draft
+
+# Get selection
+s = FreeCADGui.Selection.getSelectionEx()
+
+# Make a facebinder of the selection
+facebinder = Draft.makeFacebinder(s)
+
+# Recompute
+FreeCAD.ActiveDocument.recompute()
+
+# Create a sketch from facebinder
+sk = Draft.makeSketch(facebinder, autoconstraints=True, delete=True)
+
+# Recompute
+FreeCAD.ActiveDocument.recompute()
+
+# Reset placement of sketch so it's on XY plane
+if not sk.Placement.Rotation.Angle == 3.141592653589793:
+    sk.Placement=App.Placement(App.Vector(0,0,0), App.Rotation(App.Vector(0,0,1),0))
+
+# Make draft object with geom from sketch
+drafty = Draft.draftify(sk, makeblock=False, delete=True)
+
+# Create a group for draft geom
+group = FreeCAD.activeDocument().Tip = App.activeDocument().addObject('App::DocumentObjectGroup','Group')
+
+# Make drafty a list if it is not already
+if not isinstance(drafty, list):
+    drafty = [drafty]
+
+# For each geom of the sketch, set MakeFace to false and add it in group
+for geom in drafty:
+    group.addObject(geom)
+    if hasattr(geom, 'MakeFace'):
+        geom.MakeFace = False
+
+# Recompute
+FreeCAD.ActiveDocument.recompute()
