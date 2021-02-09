@@ -1,33 +1,35 @@
 # coding: utf-8
 
-import FreeCAD
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 import Draft
 
+# Gt active document
+doc = App.activeDocument()
+
 # Get selection
-s = FreeCADGui.Selection.getSelectionEx()
+s = Gui.Selection.getSelectionEx()
 
 # Make a facebinder of the selection
 facebinder = Draft.makeFacebinder(s)
 
 # Recompute
-FreeCAD.ActiveDocument.recompute()
+doc.recompute()
 
 # Create a sketch from facebinder
 sk = Draft.makeSketch(facebinder, autoconstraints=True, delete=True)
 
 # Recompute
-FreeCAD.ActiveDocument.recompute()
+doc.recompute()
 
 # Reset placement of sketch so it's on XY plane
-if not sk.Placement.Rotation.Angle == 3.141592653589793:
-    sk.Placement=App.Placement(App.Vector(0,0,0), App.Rotation(App.Vector(0,0,1),0))
+sk.Placement=App.Placement(App.Vector(0,0,0), App.Rotation(App.Vector(0,0,1),0))
 
 # Make draft object with geom from sketch
 drafty = Draft.draftify(sk, makeblock=False, delete=True)
 
 # Create a group for draft geom
-group = FreeCAD.activeDocument().Tip = App.activeDocument().addObject('App::DocumentObjectGroup','Group')
+group = doc.addObject('App::DocumentObjectGroup','ToSVG')
 
 # Make drafty a list if it is not already
 if not isinstance(drafty, list):
@@ -40,4 +42,8 @@ for geom in drafty:
         geom.MakeFace = False
 
 # Recompute
-FreeCAD.ActiveDocument.recompute()
+doc.recompute()
+Gui.Selection.clearSelection()
+Gui.Selection.addSelection(doc.Name,group.Name)
+Gui.activateWorkbench("DraftWorkbench")
+App.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0.0, 0.0, 0.0), FreeCAD.Vector(0, 0, 1), 0.0)
