@@ -1,13 +1,13 @@
 # macros_freecad
 Des macros pour FreeCAD
 
-## FaceToSvg
+## FaceToCAM
 Usage :
-+ Sélectionner une face
++ Sélectionner une face d'un objet
 + Exécuter la macro
 
 Résultat:
-+ Les contour sont projetés sur le plan XY et groupé dans un dossier
++ Les contours sont projetés sur le plan XY et groupé dans un dossier
 + FreeCAD bascule dans l'atelier Draft automatiquement
 + Le plan de travail est défini sur le plan XY pour faciliter les opérations suivantes.
 

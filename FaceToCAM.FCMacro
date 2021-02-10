@@ -29,7 +29,7 @@ sk.Placement=App.Placement(App.Vector(0,0,0), App.Rotation(App.Vector(0,0,1),0))
 drafty = Draft.draftify(sk, makeblock=False, delete=True)
 
 # Create a group for draft geom
-group = doc.addObject('App::DocumentObjectGroup','ToSVG')
+group = doc.addObject('App::DocumentObjectGroup','ToCAM')
 
 # Make drafty a list if it is not already
 if not isinstance(drafty, list):
